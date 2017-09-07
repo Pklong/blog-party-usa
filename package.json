@@ -1,0 +1,19 @@
+{
+  "name": "blog-party-usa",
+  "version": "1.0.0",
+  "description": "blog 4 lyfe",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Pklong",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.4",
+    "mongoose": "^4.11.9"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.0"
+  }
+}
