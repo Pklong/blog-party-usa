@@ -2,8 +2,9 @@ const Blog = require('../models/blog')
 
 module.exports = {
   index: function(req, res) {
-    Blog.find().then(a => {
-      res.json(a)
+    Blog.find().then(blogs => {
+      console.log(blogs)
+      res.render('index', {blogs})
     })
   },
   create: function(req, res) {
