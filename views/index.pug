@@ -1,6 +1,6 @@
-html
-  body
-    h1= "blogs"
-    ul
-      each blog in blogs
-        li= blog.title
+extends layout
+
+block content
+  ul
+    each blog in blogs
+      li= blog.title
