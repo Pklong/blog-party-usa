@@ -4,7 +4,7 @@ module.exports = {
   index: function(req, res) {
     Blog.find().then(blogs => {
       console.log(blogs)
-      res.render('index', {blogs})
+      res.render('index', { blogs })
     })
   },
   create: function(req, res) {
@@ -19,9 +19,11 @@ module.exports = {
         console.log(err)
         res.end('did not work')
       } else {
-        console.log(data)
-        res.json(data)
+        res.redirect('/')
       }
     })
+  },
+  new: function(req, res) {
+    res.render('new')
   }
 }
