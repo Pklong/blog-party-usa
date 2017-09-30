@@ -59,9 +59,35 @@ Let's update our package.json's `scripts` property to have a key of `start` poin
 
 We wrote the PORT directly into our code, but it's preferable to separate environment configuration. Use [dotenv] to inject our `PORT` variable into an `variables.env` file. Later, we'll use this file to store details about our database.
 
-[response]: http://expressjs.com/en/4x/api.html#res
+## First template
+
+Use [app.set] to configure the settings of our application. We'll set the `views` directory and the `view engine`to `pug`. Do this before the routing logic.
+
+Create a `views` directory and make a `hello.pug` file. [Pug] is a JS templating library which uses indentation to denote the HTML structure. Variables can be passed in and interpolated with the `=` sign. Here's an example:
+
+```yaml
+html
+  head
+    title Example Title
+  body
+    main
+      h1 I'll be an h1 tag with this text
+      h3= variablePassedToTemplate
+      p.alert Here's a body of text with the class 'alert'
+      .action divs are so common that you can just write the class!
+
+```
+
+Change the callback to your `/` route so your `res` object will now [render] the `hello` file. You don't need to specify the `views` directory or the `.pug` extension since you set that earlier. Try passing in different variables as an object in `render`'s optional second argument.
+
+
+
+[app.set]: https://expressjs.com/en/4x/api.html#app.set
+[Pug]: https://pugjs.org/api/getting-started.html
+[response]: http://expressjs.com/en/4x/api.html#res.render
 [end]: http://expressjs.com/en/4x/api.html#res.end
 [listen]: http://expressjs.com/en/4x/api.html#app.listen
 [dotenv]: https://www.npmjs.com/package/dotenv
+[render]: http://expressjs.com/en/4x/api.html#app.render
 
 
