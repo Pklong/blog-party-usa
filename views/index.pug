@@ -1,0 +1,9 @@
+extends layout.pug
+
+block content
+  each blog in blogs
+    .blog
+      h2= blog.title
+      h3= blog.author
+      p= blog.body
+    
