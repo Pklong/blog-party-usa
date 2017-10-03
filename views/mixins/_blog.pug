@@ -1,0 +1,7 @@
+mixin blog(b = {})
+  .blog
+    h2= b.title
+    h3= b.author
+    p= b.body
+    form(method="POST", action=`/${b._id}?_method=DELETE`)
+      input(type="submit", value="Delete Blog")

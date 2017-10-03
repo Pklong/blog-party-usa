@@ -18,9 +18,12 @@
   },
   "homepage": "https://github.com/Pklong/blog-party-usa#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
     "express": "^4.15.5",
-    "pug": "^2.0.0-rc.4"
+    "method-override": "^2.3.10",
+    "pug": "^2.0.0-rc.4",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"

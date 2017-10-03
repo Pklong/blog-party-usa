@@ -128,7 +128,7 @@ app.get('/', (req, res) =>
 
 ```
 
-We'll need to start handling params in our url in order to handle the `show`, `update`, and `delete` actions. Give the below example a try with a few different strings and numbers to see what is displayed.
+We'll need to start accessing params in our url in order to handle the `show`, `update`, and `delete` actions. Give the below example a try with a few different strings and numbers to see what is displayed.
 
 ```javascript
 
@@ -142,19 +142,76 @@ app.get('/:info', (req, res) => {
 ```
 
 
-Certain actions won't require a view. For deleting, updating, or editting, you'll want to [redirect] the user once you've made the appropriate change to your database file. The `index` view is a great choice!
+Certain actions won't require a view. For example, your `new` route will render the form to create a blog, but the submitted form's `POST` request will only create the blog. For deleting, updating, or editing, you'll want to [redirect] the user once you've made the appropriate change to your database file. We'll also need to introduce new middleware to parse the data from submitted forms. Check out the [body parser] docs! Finally, I added [uuid] as a dependency to generate `_id`'s for blogs...
+
+### HTML Forms: PUT, & DELETE
+
+HTML forms are only able to make `post` or `get` requests. This puts us in a bind for our `update` and `destroy` routes, as these require the HTTP verbs `put` and `delete` respectively. We could make routes that listen for `get` requests with paths that correspond to deletion, but let's keep things RESTful. Install the [method override] library; I picked the strategy using [query values].
+
+[method override]: https://github.com/expressjs/method-override
+[query values]: https://github.com/expressjs/method-override#override-using-a-query-value
+
+### Middleware Detour
+
+Until now, we've had a single callback as the second argument to be invoked when our defined route is hit. Express allows us to define an arbitrary number of middleware callbacks which we pipe together using a third argument `next`. This enables us to write tightly focused middleware that is easily composed. Here's a silly example to try out:
+
+```javascript
+
+const colors = [
+  'red',
+  'blue',
+  'green',
+  'yellow',
+  'purple',
+  'orange',
+  'pink',
+  'teal'
+]
+const sampleColor = () => {
+  const randomIdx = Math.floor(Math.random() * colors.length)
+  return colors[randomIdx]
+}
+const addColorToReq = (req, res, next) => {
+  // check if this is the first time middleware is invoked
+  if (req.colors instanceof Array) {
+    // previous middleware has set a 'colors' property
+    // Note: It's the same request object!
+    req.colors.push(sampleColor())
+  } else {
+    req.colors = [sampleColor()]
+  }
+  // invoking next ensures our following middleware will be run
+  next()
+}
+
+// we could also pass an array containing all middlewares as our second argument. Try it!
+app.get(
+  '/three-colors',
+  addColorToReq,
+  addColorToReq,
+  addColorToReq,
+  (req, res) => {
+    res.end(req.colors.join(', '))
+  }
+)
+
+```
+
+Install [body parser] and pass it as a middleware to routes where you handle form input.
 
 [redirect]: http://expressjs.com/en/api.html#res.redirect
+[body parser]: https://github.com/expressjs/body-parser
+[uuid]: https://www.npmjs.com/package/uuid
 
 
 ### Mixins
 
-You'll notice there's repetition in how blogs are displayed on the page. This is a great time to introduce [mixins]! Mixins should feel like using Rails partials. Extract the code you've been using to display your blog posts and bask in this refactored code.
+You'll notice there's repetition in how blogs are displayed on the page and the forms used to create / edit a blog. This is a great time to introduce [mixins]! Mixins should feel like using Rails partials. To use a mixin in your pug views, you'll need to [include] that mixin. Extract the code you've been using to display your blog posts and bask in this refactored code.
 
 
 
 [mixins]: https://pugjs.org/language/mixins.html
-
+[include]: https://pugjs.org/language/includes.html
 [app.set]: https://expressjs.com/en/4x/api.html#app.set
 [Pug]: https://pugjs.org/api/getting-started.html
 [response]: http://expressjs.com/en/4x/api.html#res.render
