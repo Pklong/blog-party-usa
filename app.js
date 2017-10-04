@@ -12,7 +12,6 @@ app.set('view engine', 'pug')
 
 // create application/x-www-form-urlencoded parser
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
-
 app.use(express.static(path.join(__dirname, 'styles')))
 
 app.use(methodOverride('_method'))
@@ -74,7 +73,6 @@ app.get('/:blogId', (req, res) => {
 })
 
 app.delete('/:blogId', (req, res) => {
-  console.log('in delete')
   const blogId = req.params.blogId
   const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
   const newBlogArray = blogArray.filter(b => b._id !== blogId)

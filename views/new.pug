@@ -3,9 +3,9 @@ extends layout
 block content
   form(method="POST", action="/")
     label(for="author") Author
-    input(type="text", id="author", placeholder="Author's Name")
+    input(type="text", id="author", name="author", placeholder="Author's Name")
     label(for="title") Blog Title
-    input(type="text" id="title", placeholder="Blog Title")
+    input(type="text" id="title", name="title", placeholder="Blog Title")
     label(for="blog_body") Blog Body
-    textarea(id="blog_body")
+    textarea(id="blog_body" name="blog_body")
     input(type="submit")
