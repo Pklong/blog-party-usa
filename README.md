@@ -53,6 +53,12 @@ Let's update our package.json's `scripts` property to have a key of `start` poin
 
 `npm start` and visit `localhost:3000` in your browser. Cool!
 
+#### Logging
+
+It's helpful to have a log of the requests your server is processing. There are many options, but I chose [morgan]. Install as a devDependency, require the library in `app.js` and `app.use` the logger.
+
+[morgan]: https://github.com/expressjs/morgan
+
 ### Environment configuration
 
 `npm install dotenv`
