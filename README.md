@@ -216,9 +216,30 @@ You'll notice there's repetition in how blogs are displayed on the page and the 
 
 ## Connecting MongoDB
 
+At this point, we have a fully functioning REST app using a json file as a database. We'll now swap out the logic that involves reading and writing to that file and replace it with equivalent calls to MongoDB, a noSQL database.
+
+### Database as a Service (DBaaS)
+
+There are a few ways we can run an instance of MongoDB. We can host our own local database, similar to how we've used Postgres with our Rails apps locally, or we can offload that work to someone else, similar to how we make use of Heroku. We'll use a service called [mLab] to host our MongoDB instance. Sign up for a new account and create a new database instance. Choose the AWS free sandbox option. Once you've created an instance, you'll need to create a `User` for that instance, this acts as your application's representative for reading and writing to the database instance. You'll be asked to create a username and password for this `Database User`. You should find instructions on the page about assembling your [connection string] with this User. Here's an example:
+
+```
+my username for the database User: Sennacy
+my password for the database User: catnip
+my database name: blog-party-dev
+
+mongodb://<dbuser>:<dbpassword>@ds113795.mlab.com:13795/<dbinstance>
+
+becomes
+
+mongodb://Sennacy:catnip@ds113795.mlab.com:13795/blog-party-dev
+
+```
 
 
 
+
+[connection string]: https://docs.mongodb.com/v3.2/reference/connection-string/
+[mLab]: https://mlab.com/
 [mixins]: https://pugjs.org/language/mixins.html
 [include]: https://pugjs.org/language/includes.html
 [app.set]: https://expressjs.com/en/4x/api.html#app.set
