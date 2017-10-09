@@ -1,11 +1,29 @@
+// LOAD OUR APP CONFIGURATION
 require('dotenv').config({ path: './variables.env' })
+// SIMPLIFY DIRECTORY PATHS
 const path = require('path')
+// READ AND WRITE FROM FILES
 const fs = require('fs')
+// FRAMEWORK FOR BUILDING WEB APPS WITH NODE
 const express = require('express')
+// GENERATE UNIQUE IDS FOR JSON FILE
 const uuid = require('uuid/v1')
+// PARSE HTML FORMS
 const bodyParser = require('body-parser')
+// HTML FORMS PUT & DELETE
 const methodOverride = require('method-override')
+// LOGGING
 const morgan = require('morgan')
+// MONGODB ORM
+const mongoose = require('mongoose')
+// CONNECT TO HOSTED DATABASE
+mongoose.connect(`${process.env.DATABASE}`, { useMongoClient: true })
+const db = mongoose.connection
+db.on('error', err => console.error(err))
+db.once('open', () => {
+  console.log('connected')
+})
+// MAKE THE APP
 const app = express()
 
 app.set('views', 'views')

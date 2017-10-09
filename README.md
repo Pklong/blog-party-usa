@@ -223,9 +223,9 @@ At this point, we have a fully functioning REST app using a json file as a datab
 There are a few ways we can run an instance of MongoDB. We can host our own local database, similar to how we've used Postgres with our Rails apps locally, or we can offload that work to someone else, similar to how we make use of Heroku. We'll use a service called [mLab] to host our MongoDB instance. Sign up for a new account and create a new database instance. Choose the AWS free sandbox option. Once you've created an instance, you'll need to create a `User` for that instance, this acts as your application's representative for reading and writing to the database instance. You'll be asked to create a username and password for this `Database User`. You should find instructions on the page about assembling your [connection string] with this User. Here's an example:
 
 ```
-my username for the database User: Sennacy
-my password for the database User: catnip
-my database name: blog-party-dev
+database username: Sennacy
+database password: catnip
+database instance name: blog-party-dev
 
 mongodb://<dbuser>:<dbpassword>@ds113795.mlab.com:13795/<dbinstance>
 
@@ -235,7 +235,26 @@ mongodb://Sennacy:catnip@ds113795.mlab.com:13795/blog-party-dev
 
 ```
 
+Store this connection string under `DATABASE` in your `variables.env` file.
 
+### Introducing Mongoose
+
+We'll use [Mongoose] to interact with our hosted MongoDB instance. [Mongoose] is an Object-Modeling library for MongoDB which will simplify our interactions with the database, much like ActiveRecord simplifies our interactions in Rails. `npm install mongoose`. Require it at the top of your `app.js` file and use your connection string...
+
+```javascript
+const mongoose = require('mongoose')
+mongoose.connect({read your connection string from your configuration})
+
+// If you see a deprecation warning in the console... 
+// http://mongoosejs.com/docs/connections.html#use-mongo-client
+
+const db = mongoose.connection
+db.on('error', (err) => {console.error(err)})
+db.once('open', function() {
+  console.log('it works!')
+})
+
+```
 
 
 [connection string]: https://docs.mongodb.com/v3.2/reference/connection-string/
@@ -249,5 +268,5 @@ mongodb://Sennacy:catnip@ds113795.mlab.com:13795/blog-party-dev
 [listen]: http://expressjs.com/en/4x/api.html#app.listen
 [dotenv]: https://www.npmjs.com/package/dotenv
 [render]: http://expressjs.com/en/4x/api.html#app.render
-
+[Mongoose]: http://mongoosejs.com/
 
