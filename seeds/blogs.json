@@ -46,5 +46,13 @@
     "_id": "59b981059ca285cd7eb9b9f5",
     "updatedAt": 1506977074062,
     "createdAt": 1506977074062
+  },
+  {
+    "author": "Patrick",
+    "title": "Carlos the Jackal!",
+    "_id": "c5d25d40-ad01-11e7-b5b0-ab888e99fd24",
+    "body": "SPOOKY!",
+    "updatedAt": 1507562026521,
+    "createdAt": 1507560878356
   }
 ]

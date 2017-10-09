@@ -208,6 +208,9 @@ Install [body parser] and pass it as a middleware to routes where you handle for
 
 You'll notice there's repetition in how blogs are displayed on the page and the forms used to create / edit a blog. This is a great time to introduce [mixins]! Mixins should feel like using Rails partials. To use a mixin in your pug views, you'll need to [include] that mixin. Extract the code you've been using to display your blog posts and bask in this refactored code.
 
+## Connecting MongoDB
+
+
 
 
 [mixins]: https://pugjs.org/language/mixins.html

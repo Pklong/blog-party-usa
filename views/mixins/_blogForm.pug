@@ -1,0 +1,11 @@
+mixin blogForm(b = {}, action='/')
+  
+  form(method="POST", action=action)
+    label(for="author") Author
+    input(type="text", id="author", name="author", value=b.author, placeholder="Author's Name")
+    label(for="title") Blog Title
+    input(type="text" id="title", name="title",  value=b.title, placeholder="Blog Title")
+    label(for="blog_body") Blog Body
+    textarea(id="blog_body", name="blog_body")= b.body
+    input(type="submit")
+  a(href="/") Return to Index

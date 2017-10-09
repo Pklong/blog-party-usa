@@ -3,6 +3,7 @@ extends layout.pug
 include mixins/_blog
 
 block content
+  a(href="/new") Make New Blog
   each blog in blogs
     +blog(blog)
     

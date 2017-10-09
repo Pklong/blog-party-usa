@@ -1,0 +1,7 @@
+extends layout.pug
+
+include mixins/_blogForm
+
+block content
+  +blogForm(blog, `/${blog._id}?_method=PUT`)
+    

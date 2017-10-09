@@ -5,3 +5,4 @@ mixin blog(b = {})
     p= b.body
     form(method="POST", action=`/${b._id}?_method=DELETE`)
       input(type="submit", value="Delete Blog")
+    a(href=`${b._id}/edit`) Edit Blog
