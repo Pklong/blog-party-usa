@@ -18,11 +18,23 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 // CONNECT TO HOSTED DATABASE
 mongoose.connect(`${process.env.DATABASE}`, { useMongoClient: true })
+
 const db = mongoose.connection
 db.on('error', err => console.error(err))
+// Create Schema and Model once connected
+let Blog, blogSchema
 db.once('open', () => {
-  console.log('connected')
+  blogSchema = new mongoose.Schema({
+    author: String,
+    title: String,
+    body: String,
+    updatedAt: Date,
+    createdAt: Date
+  })
+
+  Blog = mongoose.model('Blog', blogSchema)
 })
+
 // MAKE THE APP
 const app = express()
 
@@ -31,11 +43,15 @@ app.set('view engine', 'pug')
 
 // create application/x-www-form-urlencoded parser
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
-app.use(morgan('combined'))
-app.use(express.static(path.join(__dirname, 'styles')))
 
+// LOGGING
+app.use(morgan('combined'))
+// SERVING STATIC FILES
+app.use(express.static(path.join(__dirname, 'styles')))
+// PUT & DELETE FOR FORMS
 app.use(methodOverride('_method'))
 
+// MIDDLEWARE EXAMPLE
 const colors = [
   'red',
   'blue',
@@ -68,102 +84,159 @@ app.get(
     res.end(req.colors.join(', '))
   }
 )
-
+// INDEX VIEW
 app.get('/', (req, res) => {
   // synchronous method to read in the file. Bad! We'll replace...
-  const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
-  res.render('index', {
-    blogs: blogArray
+  // const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
+  Blog.find((err, blogCollection) => {
+    if (err) {
+      res.status(404).end('something went wrong')
+    } else {
+      res.render('index', {
+        blogs: blogCollection
+      })
+    }
   })
 })
 
+// NEW VIEW
 app.get('/new', (req, res) => {
   res.render('new')
 })
 
+// SHOW VIEW
 app.get('/:blogId', (req, res) => {
   const blogId = req.params.blogId
-  const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
-  let blog
-  for (let i = 0; i < blogArray.length; i++) {
-    if (blogArray[i]._id === blogId) {
-      blog = blogArray[i]
-      break
+  // const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
+  // let blog
+  // for (let i = 0; i < blogArray.length; i++) {
+  //   if (blogArray[i]._id === blogId) {
+  //     blog = blogArray[i]
+  //     break
+  //   }
+  // }
+  // if (blog !== undefined) {
+  //   res.render('show', { blog })
+  // } else {
+  //   res.status(404).end('Blog Not Found')
+  // }
+  Blog.findById(blogId, (err, blog) => {
+    if (err) {
+      res.status(404).end('Blog not found')
+    } else {
+      res.render('show', { blog })
     }
-  }
-  if (blog !== undefined) {
-    res.render('show', { blog })
-  } else {
-    res.status(404).end('Blog Not Found')
-  }
+  })
 })
 
+// EDIT VIEW
 app.get('/:blogId/edit', (req, res) => {
   const blogId = req.params.blogId
-  const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
-  let blog
-  for (let i = 0; i < blogArray.length; i++) {
-    if (blogArray[i]._id === blogId) {
-      blog = blogArray[i]
-      break
+  // const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
+  // let blog
+  // for (let i = 0; i < blogArray.length; i++) {
+  //   if (blogArray[i]._id === blogId) {
+  //     blog = blogArray[i]
+  //     break
+  //   }
+  // }
+  // if (blog !== undefined) {
+  //   res.render('edit', { blog })
+  // } else {
+  //   res.status(404).end('Blog Not Found')
+  // }
+
+  Blog.findById(blogId, (err, blog) => {
+    if (err) {
+      res.status(404).end('Blog not found')
+    } else {
+      res.render('edit', { blog })
     }
-  }
-  if (blog !== undefined) {
-    res.render('edit', { blog })
-  } else {
-    res.status(404).end('Blog Not Found')
-  }
+  })
 })
 
+// DELETE ACTION
 app.delete('/:blogId', (req, res) => {
   const blogId = req.params.blogId
-  const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
-  const newBlogArray = blogArray.filter(b => b._id !== blogId)
+  // const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
+  // const newBlogArray = blogArray.filter(b => b._id !== blogId)
 
-  fs.writeFileSync('./seeds/blogs.json', JSON.stringify(newBlogArray, null, 2))
-  res.redirect(303, '/')
+  // fs.writeFileSync('./seeds/blogs.json', JSON.stringify(newBlogArray, null, 2))
+
+  Blog.deleteOne({ _id: blogId }, () => {
+    res.redirect(303, '/')
+  })
 })
 
+// UPDATE ACTION
 app.put('/:blogId', urlencodedParser, (req, res) => {
   const blogId = req.params.blogId
-  const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
-  let blog, blogIdx
-  for (let i = 0; i < blogArray.length; i++) {
-    if (blogArray[i]._id === blogId) {
-      blog = blogArray[i]
-      blogIdx = i
-      break
+  // const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
+  // let blog, blogIdx
+  // for (let i = 0; i < blogArray.length; i++) {
+  //   if (blogArray[i]._id === blogId) {
+  //     blog = blogArray[i]
+  //     blogIdx = i
+  //     break
+  //   }
+  // }
+  // if (blog !== undefined) {
+  //   const { author, title, blog_body: body } = req.body
+  //   const updatedBlog = Object.assign({}, blog, {
+  //     author,
+  //     title,
+  //     body,
+  //     updatedAt: Date.now()
+  //   })
+  //   blogArray[blogIdx] = updatedBlog
+  //   fs.writeFileSync('./seeds/blogs.json', JSON.stringify(blogArray, null, 2))
+  //   res.redirect(303, '/')
+  // } else {
+  //   res.status(404).end('Blog Not Found')
+  // }
+  const { author, title, blog_body: body } = req.body
+  Blog.findByIdAndUpdate(
+    blogId,
+    { author, title, body, updatedAt: Date.now() },
+    err => {
+      if (err) {
+        res.status(404).end('Blog not found')
+      } else {
+        res.redirect(303, '/')
+      }
     }
-  }
-  if (blog !== undefined) {
-    const { author, title, blog_body: body } = req.body
-    const updatedBlog = Object.assign({}, blog, {
-      author,
-      title,
-      body,
-      updatedAt: Date.now()
-    })
-    blogArray[blogIdx] = updatedBlog
-    fs.writeFileSync('./seeds/blogs.json', JSON.stringify(blogArray, null, 2))
-    res.redirect(303, '/')
-  } else {
-    res.status(404).end('Blog Not Found')
-  }
+  )
 })
 
+// CREATE ACTION
 app.post('/', urlencodedParser, (req, res) => {
-  const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
-  const newBlog = {
-    author: req.body.author || 'anon',
-    title: req.body.title || 'BLOG TITLE',
-    _id: uuid(),
-    body: req.body.blog_body || 'Just blog things',
-    updatedAt: Date.now(),
-    createdAt: Date.now()
-  }
-  blogArray.push(newBlog)
-  fs.writeFileSync('./seeds/blogs.json', JSON.stringify(blogArray, null, 2))
-  res.redirect(303, '/')
+  // const blogArray = JSON.parse(fs.readFileSync('./seeds/blogs.json', 'utf-8'))
+  // const newBlog = {
+  //   author: req.body.author || 'anon',
+  //   title: req.body.title || 'BLOG TITLE',
+  //   _id: uuid(),
+  //   body: req.body.blog_body || 'Just blog things',
+  //   updatedAt: Date.now(),
+  //   createdAt: Date.now()
+  // }
+  // blogArray.push(newBlog)
+  // fs.writeFileSync('./seeds/blogs.json', JSON.stringify(blogArray, null, 2))
+  Blog.create(
+    {
+      author: req.body.author || 'anon',
+      title: req.body.title || 'blog title',
+      body: req.body.blog_body || 'blog body',
+      updatedAt: Date.now(),
+      createdAt: Date.now()
+    },
+    (err, blog) => {
+      if (err) {
+        res.status(404).end('something went wrong')
+      } else {
+        res.redirect(303, '/')
+      }
+    }
+  )
 })
 
 app.listen(process.env.PORT, () =>

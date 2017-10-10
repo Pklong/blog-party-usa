@@ -6,4 +6,5 @@ block content
   a(href="/new") Make New Blog
   each blog in blogs
     +blog(blog)
+    a(href=`${blog._id}`) Visit Blog Detail
     

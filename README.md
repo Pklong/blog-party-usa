@@ -243,7 +243,7 @@ We'll use [Mongoose] to interact with our hosted MongoDB instance. [Mongoose] is
 
 ```javascript
 const mongoose = require('mongoose')
-mongoose.connect({read your connection string from your configuration})
+mongoose.connect("connection string from your configuration")
 
 // If you see a deprecation warning in the console... 
 // http://mongoosejs.com/docs/connections.html#use-mongo-client
@@ -256,6 +256,111 @@ db.once('open', function() {
 
 ```
 
+#### Defining the Schema
+
+MongoDB collections (noSQL's version of tables) are mapped to a schema which we define using Mongoose. A new Schema is created for each collection which we wish to represent in our application. The Schema function is invoked with an object that contains the properties of our collection and their respective types. Here's an example...
+
+```javascript
+
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const userSchema = new Schema({
+    name: String,
+    age: Number
+})
+
+```
+
+Check out the mongoose [guide] for more information. The `blogSchema` properties will be almost identical to your json file, except we won't need to define the `_id` property ourselves.
+
+#### Compiling our Model
+
+Once you've created a `blogSchema`, we'll invoke the `mongoose.model` function to create our models. These models will be our way our interacting with the underlying mongoDB collections. Here's an example...
+
+```javascript
+
+// create our model
+const User = mongoose.model('User', userSchema)
+
+// create an unsaved instance of our model
+const sennacy = new User({name: "Sennacy", age: 11})
+
+// asynchronously save our instance
+sennacy.save(function(err) {
+  if (err) {
+    console.log(err)
+  } else {
+    console.log("sennacy has been saved!")
+  }
+})
+
+// alternatively...
+
+User.create({name: "Wampus", age: 14}, function(err) {
+  if (err) {
+    console.log('oh no!')
+  } else {
+    console.log('instance saved!')
+  }
+})
+
+```
+
+It's important to note that all *interactions with our database will be asynchronous*. The above example uses callbacks, and promises or async/await are also supported. You'll need to connect Node's Promises to Mongoose if you're interested in using promises instead of callbacks. [Read more here].
+
+[read more here]: http://mongoosejs.com/docs/promises.html
+
+Here's an example of querying...
+
+```javascript
+
+// query model and pass results to second argument callback
+User.find({name: "Wampus"}, function(err, docs) {
+    console.log(docs)
+})
+```
+
+Further information is available in the [documentation].
+
+#### Inspecting our collections
+
+We'll use a GUI provided by MongoDB to inspect our database instance. Download [Compass] and install it on your computer. Copy the database connection string in your `variables.env` and Compass will detect the string when it loads. You should be able to automatically fill all the fields and continue. Your database will now be available to view, though there's nothing to see yet!
+
+#### Replacing json with MongoDB
+
+Go back through your routes and replace the logic of reading and writing to the json file with reading and writing to your `Blog` model. Lean heavily on the mongoose documentation for models here. Remember that all operations will be asynchronous, so you'll build the `response` objects in success callbacks. Here's an example of how an index view might look...
+
+
+```javascript
+
+app.get('/', (req, res) => {
+    // return all documents in collection
+    User.find(function(err, users) {
+      if (err) {
+        // there was an error retrieving the documents
+        res.status(500).end('something bad happened')
+      } else {
+        // pass the retrieved documents to our Pug view
+        res.render('index', { users })
+      }
+    })
+})
+
+
+```
+
+### Finishing up
+
+Congratulations, you've created a Node application with full CRUD functionality backed by MongoDB! Here are some ideas for improvements:
+
+* Refactor so the entire app isn't in a single file
+  * Organize functionality, have a controller directory, a views directory, a models directory, etc.
+* Implement user authentication
+  * Check out [Passport.js]
+* Explore more complex queries 
+  * Allow users to see 5 most recent posts
+  * Add tagging to blogs
 
 [connection string]: https://docs.mongodb.com/v3.2/reference/connection-string/
 [mLab]: https://mlab.com/
@@ -269,4 +374,8 @@ db.once('open', function() {
 [dotenv]: https://www.npmjs.com/package/dotenv
 [render]: http://expressjs.com/en/4x/api.html#app.render
 [Mongoose]: http://mongoosejs.com/
+[guide]: http://mongoosejs.com/docs/guide.html
+[documentation]: http://mongoosejs.com/docs/api.html#model_Model.find
+[Compass]: https://www.mongodb.com/products/compass
+[Passport.js]: http://passportjs.org/
 
