@@ -140,8 +140,8 @@ We'll need to start accessing params in our url in order to handle the `show`, `
 
 // the colon indicates this is a url parameter
 app.get('/:info', (req, res) => {
-    // we have access to the param in our request object
-    res.end(req.param.info)
+    // we have access to the params in our request object
+    res.end(req.params.info)
     }
 )
 
