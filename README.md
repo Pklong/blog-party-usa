@@ -8,13 +8,13 @@ This project will provide an introduction to Express and server-side rendering u
 
 ## Getting Started
 
-npm install express as a dependency and nodemon as a devDependency.
+`npm install express` as a dependency and `nodemon` as a devDependency.
 
 ### [Dependency vs. DevDependency](https://stackoverflow.com/a/22004559/4462871) :confused:
 
 ## Hello Express
 
-Make an `app.js` file and require `express` at the top. Express will export as default a function which takes no arguments and returns our app object where we will define various properties.
+Make an `app.js` file and require `express` at the top. Invoke the default export with no arguments and save the result to a variable. This will be your `app` object, which has methods for routing, middleware, registering templates and rendering views.
 
 ### [app.METHOD](http://expressjs.com/en/api.html#app.METHOD)
 
@@ -372,7 +372,7 @@ Congratulations, you've created a Node application with full CRUD functionality 
 [end]: http://expressjs.com/en/4x/api.html#res.end
 [listen]: http://expressjs.com/en/4x/api.html#app.listen
 [dotenv]: https://www.npmjs.com/package/dotenv
-[render]: http://expressjs.com/en/4x/api.html#app.render
+[render]: http://expressjs.com/en/4x/api.html#res.render
 [Mongoose]: http://mongoosejs.com/
 [guide]: http://mongoosejs.com/docs/guide.html
 [documentation]: http://mongoosejs.com/docs/api.html#model_Model.find
