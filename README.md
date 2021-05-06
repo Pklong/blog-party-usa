@@ -1,6 +1,6 @@
 # Blog Party USA
 
-This project will provide an introduction to Express and server-side rendering using the JS templating engine Pug. We'll use [Node], [Express], and [MongoDB] to build an application that allows users to view and create blog posts.
+This project provides an introduction to Express and server-side rendering using the JS templating engine Pug. I use [Node], [Express], and [MongoDB] to build an application that allows users to view and create blog posts.
 
 [Node]: https://nodejs.org/en/about/
 [Express]: http://expressjs.com/
